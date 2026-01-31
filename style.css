@@ -6,12 +6,12 @@
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column; /* Alinha header e card um embaixo do outro */
+    flex-direction: column;
     align-items: center;
-    overflow: hidden;
     background: #0f2027;
+    overflow-x: hidden; /* Evita que a página dance para os lados no celular */
 }
 
 /* Fundo dinâmico */
@@ -27,7 +27,7 @@ body {
 .bg-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, #0f2027, #2c5364,  #4b3247, #f2994a, #f2c94c);
+    background: linear-gradient(135deg, #0f2027, #2c5364, #4b3247, #f2994a, #f2c94c);
     background-size: 400% 400%;
     animation: transicaoClima 90s ease infinite;
     z-index: -1;
@@ -39,34 +39,32 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Título superior (fora do painel) */
 .main-header {
     margin-top: 50px;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    text-align: center;
 }
 
 .main-header h1 {
     color: white;
     font-size: 3rem;
-    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
-/* Painel */
+/* PAINEL (O CORAÇÃO DO AJUSTE) */
 .glass-card {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px); /* Suporte para Safari/iOS */
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 40px;
     padding: 50px;
-    width: 850px; /* Largura aumentada para telas horizontais */
-    max-width: 90%; /* Responsivo para telas menores */
+    width: 850px; /* Largura desktop */
+    max-width: 90%; /* Limite para não bater nas bordas da tela */
     color: white;
     box-shadow: 0 25px 50px rgba(0,0,0,0.3);
 }
 
-/* Barra de busca */
 .search-container { position: relative; margin-bottom: 40px; }
 .search-box { display: flex; gap: 15px; }
 
@@ -79,12 +77,9 @@ input {
     color: white;
     font-size: 1.1rem;
     outline: none;
+    width: 100%; /* Garante que o input não empurre a caixa */
 }
 
-input::placeholder {
-    color: #ffffff;
-    opacity: 0.5;    /* transparente */
-}
 button {
     padding: 0 30px;
     border-radius: 15px;
@@ -96,9 +91,6 @@ button {
     transition: 0.3s;
 }
 
-button:hover { background: #f2994a; color: white; }
-
-/* Resultado do Clima */
 .weather-content {
     display: flex;
     justify-content: space-around;
@@ -106,20 +98,12 @@ button:hover { background: #f2994a; color: white; }
     margin-top: 30px;
 }
 
-#weather-desc {
-    font-size: 1.2rem;
-    color: #ffffff;
-    text-transform: capitalize;
-    margin-top: 5px;
-    font-weight: 500;
-}
 .temp-display {
-    font-size: 100px; /* Destaque maior na temperatura */
+    font-size: 100px;
     font-weight: bold;
 }
 
 .extra-details {
-    text-align: left;
     background: rgba(255, 255, 255, 0.1);
     padding: 20px 40px;
     border-radius: 20px;
@@ -132,9 +116,46 @@ button:hover { background: #f2994a; color: white; }
     border-radius: 15px;
     list-style: none;
     z-index: 100;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .suggestion-box li { padding: 15px; color: #333; cursor: pointer; }
-.suggestion-box li:hover { background: #f0f0f0; }
+
+/* ===========================================
+   AJUSTES ESPECÍFICOS PARA CELULAR
+   =========================================== */
+@media (max-width: 768px) {
+    .main-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .glass-card {
+        width: 100%; /* Força a caixa a ocupar a largura disponível */
+        padding: 30px 20px; /* Diminui o respiro interno */
+        border-radius: 20px;
+    }
+
+    .search-box {
+        flex-direction: column; /* Input em cima, botão embaixo */
+    }
+
+    button {
+        height: 50px; /* Botão com altura fixa no mobile */
+    }
+
+    .weather-content {
+        flex-direction: column; /* Temperatura em cima, vento embaixo */
+        gap: 20px;
+    }
+
+    .temp-display {
+        font-size: 60px; /* Temperatura menor para caber na tela */
+    }
+
+    .extra-details {
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+    }
+}

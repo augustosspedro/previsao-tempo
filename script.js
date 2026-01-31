@@ -2,7 +2,6 @@ const btn = document.getElementById('search-btn');
 const input = document.getElementById('city-input');
 const suggestionList = document.getElementById('suggestion-list');
 
-// Dicionário de tradução (WMO Code para Português)
 function traduzirClima(codigo) {
     const tabela = {
         0: "Céu Limpo", 1: "Céu aberto", 2: "Parcialmente Nublado", 3: "Nublado",
@@ -12,7 +11,6 @@ function traduzirClima(codigo) {
     return tabela[codigo] || "Tempo Variável";
 }
 
-// --- API DO IBGE ---
 input.addEventListener('input', async () => {
     const termo = input.value;
     
@@ -22,15 +20,13 @@ input.addEventListener('input', async () => {
     }
 
     try {
-        // Busca cidades no IBGE que contêm o texto digitado
         const url = `https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome`;
         const res = await fetch(url);
         const cidades = await res.json();
 
-        // Filtra as cidades que começam com o que digita
         const filtradas = cidades
             .filter(c => c.nome.toLowerCase().startsWith(termo.toLowerCase()))
-            .slice(0, 6); // Pega apenas as 6 primeiras
+            .slice(0, 6);
 
         suggestionList.innerHTML = "";
 
@@ -50,7 +46,6 @@ input.addEventListener('input', async () => {
     }
 });
 
-// --- BUSCA DO CLIMA (OPEN-METEO) ---
 async function buscarClima(cidadeNome) {
     const cidade = cidadeNome || input.value;
     if (!cidade) return;
@@ -58,7 +53,6 @@ async function buscarClima(cidadeNome) {
     suggestionList.innerHTML = "";
 
     try {
-        // 1. Descobrir Lat/Lon (Nominatim ainda é necessário para coordenadas)
         const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${cidade}&limit=1&countrycodes=br`;
         const geoRes = await fetch(geoUrl);
         const geoData = await geoRes.json();
@@ -67,12 +61,10 @@ async function buscarClima(cidadeNome) {
 
         const { lat, lon } = geoData[0];
 
-        // 2. Buscar Clima Real
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
         const weatherRes = await fetch(weatherUrl);
         const weatherData = await weatherRes.json();
 
-        // 3. Atualizar Interface
         document.getElementById('city-name').innerText = cidade;
         document.getElementById('temp').innerText = Math.floor(weatherData.current_weather.temperature);
         document.getElementById('wind').innerText = weatherData.current_weather.windspeed;
